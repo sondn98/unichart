@@ -1,0 +1,23 @@
+# Minimal example — deploy an nginx pod with a ClusterIP service.
+# This is the smallest valid values file for unichart.
+#
+# Usage:
+#   helm install my-app oci://ghcr.io/sondn98/unichart/generic -f minimal.yaml
+
+applicationName: my-app
+
+deployment:
+  image:
+    repository: docker.io/nginx
+    tag: "1.25"
+  ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+
+service:
+  ports:
+    - port: 80
+      name: http
+      protocol: TCP
+      targetPort: 80

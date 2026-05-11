@@ -62,12 +62,6 @@ deployment:
   additionalPodAnnotations:
     key: value
 
-  # Annotations for fluentd Configurations
-  fluentdConfigAnnotations:
-    fluentd:
-      regex: hello
-      timeFormat: world
-
   # Replicas to be created
   replicas: 2
 

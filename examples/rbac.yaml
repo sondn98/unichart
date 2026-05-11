@@ -1,0 +1,42 @@
+# RBAC example — ServiceAccount with AWS IRSA annotation and a custom Role.
+#
+# This pattern is common when a pod needs to call the Kubernetes API
+# (e.g. an operator or a controller) or when using IAM Roles for Service Accounts (IRSA) on EKS.
+#
+# Usage:
+#   helm install my-app oci://ghcr.io/sondn98/unichart/generic -f rbac.yaml
+
+applicationName: my-app
+
+deployment:
+  image:
+    repository: docker.io/myorg/my-app
+    tag: "1.0.0"
+
+service:
+  ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+      targetPort: 8080
+
+rbac:
+  enabled: true
+  serviceAccount:
+    enabled: true
+    # Annotate with an IAM role ARN for AWS IRSA
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-app-role
+  roles:
+    # Allow the pod to read ConfigMaps in its own namespace
+    - name: configmap-reader
+      rules:
+        - apiGroups: [""]
+          resources: ["configmaps"]
+          verbs: ["get", "list", "watch"]
+    # Allow the pod to read and update its own Deployment (e.g. for self-scaling logic)
+    - name: deployment-reader
+      rules:
+        - apiGroups: ["apps"]
+          resources: ["deployments"]
+          verbs: ["get", "list"]

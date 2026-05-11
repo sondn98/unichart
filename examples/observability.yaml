@@ -1,0 +1,72 @@
+# Observability example — ServiceMonitor, PrometheusRule, and GrafanaDashboard.
+#
+# Prerequisites:
+#   - Prometheus Operator installed (for ServiceMonitor and PrometheusRule)
+#   - Grafana Operator installed (for GrafanaDashboard)
+#
+# Usage:
+#   helm install my-app oci://ghcr.io/sondn98/unichart/generic -f observability.yaml
+
+applicationName: my-app
+
+deployment:
+  image:
+    repository: docker.io/myorg/my-app
+    tag: "1.0.0"
+  ports:
+    - containerPort: 8080
+      name: http
+      protocol: TCP
+
+service:
+  ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+      targetPort: 8080
+
+# --- ServiceMonitor: tell Prometheus where to scrape metrics ---
+serviceMonitor:
+  enabled: true
+  # This label must match the Prometheus Operator's serviceMonitorSelector
+  additionalLabels:
+    release: kube-prometheus-stack
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+
+# --- PrometheusRule: define alerting rules ---
+prometheusRule:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack
+  groups:
+    - name: my-app.rules
+      rules:
+        - alert: MyAppDown
+          expr: up{job="my-app"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "my-app is down"
+            description: "No running instances of my-app have been detected for 2 minutes."
+        - alert: MyAppHighErrorRate
+          expr: |
+            rate(http_requests_total{job="my-app", status=~"5.."}[5m])
+              / rate(http_requests_total{job="my-app"}[5m]) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "my-app error rate above 5%"
+
+# --- GrafanaDashboard: load a dashboard from a remote URL ---
+grafanaDashboard:
+  enabled: true
+  additionalLabels:
+    grafanaDashboard: grafana-operator
+  contents:
+    my-app-overview:
+      url: https://grafana.com/api/dashboards/12345/revisions/1/download

@@ -1,0 +1,66 @@
+# Jobs and CronJobs example.
+# Shows a pre-upgrade database migration Job (Helm hook) and a nightly cleanup CronJob.
+#
+# Usage:
+#   helm install my-app oci://ghcr.io/sondn98/unichart/generic -f jobs.yaml
+
+applicationName: my-app
+
+deployment:
+  image:
+    repository: docker.io/myorg/my-app
+    tag: "1.0.0"
+
+service:
+  ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+      targetPort: 8080
+
+# --- One-off Job: database migration run before every install/upgrade ---
+job:
+  enabled: true
+  jobs:
+    db-migration:
+      image:
+        repository: docker.io/myorg/my-app
+        tag: "1.0.0"
+      command: ["/bin/sh", "-c"]
+      args: ["python manage.py migrate --noinput"]
+      # Helm hook annotations make this Job run before the Deployment is updated
+      additionalPodAnnotations:
+        helm.sh/hook: pre-install,pre-upgrade
+        helm.sh/hook-weight: "-1"
+        helm.sh/hook-delete-policy: before-hook-creation
+      env:
+        DB_HOST:
+          valueFrom:
+            secretKeyRef:
+              name: my-app-db-credentials
+              key: DB_HOST
+        DB_PASSWORD:
+          valueFrom:
+            secretKeyRef:
+              name: my-app-db-credentials
+              key: DB_PASSWORD
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+# --- CronJob: nightly cleanup task ---
+cronJob:
+  enabled: true
+  jobs:
+    nightly-cleanup:
+      schedule: "0 2 * * *"   # 02:00 UTC every day
+      image:
+        repository: docker.io/myorg/my-app
+        tag: "1.0.0"
+      command: ["/bin/sh", "-c"]
+      args: ["python manage.py cleanup_old_records"]
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi

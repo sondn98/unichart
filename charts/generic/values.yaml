@@ -170,19 +170,6 @@ deployment:
     #   image: busybox
     #   imagePullPolicy: IfNotPresent
     #   command: ['/bin/sh']
-  # -- (object) Configuration details for fluentdConfigurations.
-  # Only works for specific setup, see <https://medium.com/stakater/dynamic-log-processing-with-fluentd-konfigurator-and-slack-935a5de4eddb>.
-  # @section -- Deployment Parameters
-  fluentdConfigAnnotations:
-    # regex: hello
-    # regexFirstLine: hello
-    # timeFormat: world
-    # notifications:
-    #   key: value
-    #   pattern: value
-    #   slack:
-    #     webhookURL: https://hooks.slack.com/services/XXXXX/XXXXX/XXXXX
-    #     channelName: "#channel"
   # -- (int) Number of replicas.
   # @section -- Deployment Parameters
   replicas:
