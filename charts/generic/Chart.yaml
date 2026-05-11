@@ -1,0 +1,13 @@
+apiVersion: v2
+type: application
+name: unichart
+description: Generic reusable Helm chart for Kubernetes applications
+version: 1.0.0
+appVersion: 1.0.0
+keywords:
+  - kubernetes
+  - fabricator
+home: https://github.com/sondn98/unichart
+maintainers:
+- name: sondn98
+  email: dongocson.work@gmail.com

@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Helm
+*.tgz
+
+# Kubernetes
+kubeconfig*
+*.kubeconfig
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.*
+
+# Temporary files
+tmp/
+temp/
