@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: unichart
 description: Generic reusable Helm chart for Kubernetes applications
-version: 1.0.0
+version: 1.0.1
 appVersion: 1.0.0
 keywords:
   - kubernetes

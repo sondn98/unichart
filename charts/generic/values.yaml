@@ -405,9 +405,7 @@ deployment:
     #   cpu: 0.1
   # -- (object) Security Context at Container Level.
   # @section -- Deployment Parameters
-  containerSecurityContext:
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
+  containerSecurityContext: {}
   openshiftOAuthProxy:
     # -- (bool) Enable [OpenShift OAuth Proxy](https://github.com/openshift/oauth-proxy).
     # @section -- Deployment Parameters

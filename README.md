@@ -85,7 +85,7 @@ Column meanings:
 | `deployment.initContainers` | object | `nil` | _(see example)_ | No | Init containers. Key is the container name; value is the container spec. |
 | `deployment.additionalContainers` | list | `nil` | _(see example)_ | No | Sidecar containers appended to the pod spec (no Helm templating). |
 | `deployment.resources` | object | `{}` | `{limits: {memory: 256Mi}}` | No | CPU and memory requests/limits for the main container. |
-| `deployment.containerSecurityContext` | object | `{readOnlyRootFilesystem: true, runAsNonRoot: true}` | — | No | Security context at the container level. |
+| `deployment.containerSecurityContext` | object | `{}` | — | No | Security context at the container level. |
 | `deployment.securityContext` | object | `{}` | `{fsGroup: 2000}` | No | Security context at the pod level. |
 | `deployment.automountServiceAccountToken` | bool | `true` | — | No | Whether to auto-mount the service account token into the pod. |
 | `deployment.enableServiceLinks` | bool | `true` | — | No | Whether to inject service environment variables into the pod. |
